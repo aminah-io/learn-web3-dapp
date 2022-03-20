@@ -8,10 +8,10 @@ export default async function connect(
   //...
   try {
     const {network} = req.body;
-    const client = undefined;
-    const info = undefined;
-    const version = undefined;
-    if (version === undefined) {
+    const client = getAvalancheClient(network);
+    const info = client.Info();
+    const version = await info.getNodeVersion();
+    if (version === null) {
       throw new Error('Connection failed: Complete the code');
     }
     res.status(200).json(version);
