@@ -1,3 +1,4 @@
+import { KeyPair } from 'near-api-js';
 import type {NextApiRequest, NextApiResponse} from 'next';
 import {getAvalancheClient} from '@figment-avalanche/lib';
 
@@ -15,9 +16,9 @@ export default function account(
     const client = getAvalancheClient(network);
     const chain = client.XChain();
     const keyChain = chain.keyChain();
-    const keypair = keyChain.undefined; // There is a useful method to use here
-    const secret = undefined;
-    const address = undefined;
+    const keypair = keyChain.makeKey(); // There is a useful method to use here
+    const secret = keypair.getPrivateKeyString();
+    const address = keypair.getAddressString();
     res.status(200).json({
       secret,
       address,
