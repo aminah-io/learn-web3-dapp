@@ -12,10 +12,10 @@ export default async function transfer(
     const chain = client.XChain();
     const keychain = chain.keyChain();
     // Using keychain, load the private key to sign transactions
-    undefined;
+    keychain.importKey(secret);
 
     // Fetch UTXOs (unspent transaction outputs)
-    const {utxos} = undefined;
+    const {utxos} = await chain.getUTXOs(address);
 
     // Determine the real asset ID from its symbol/alias
     const binTools = BinTools.getInstance();
@@ -23,11 +23,19 @@ export default async function transfer(
     const assetID = binTools.cb58Encode(assetInfo.assetID);
 
     // Create a new transaction
-    const transaction = await chain.buildBaseTx(undefined);
+    let sendAmount = new BN(navax);
+    const transaction = await chain.buildBaseTx(
+      utxos,
+      sendAmount,
+      assetID,
+      [recipient],
+      [address],
+      [address],
+    );
 
     // Sign the transaction and send it to the network
-    undefined;
-    undefined;
+    let signedTx = transaction.sign(keychain);
+    let hash = await chain.issueTx(signedTx);
 
     res.status(200).json(hash);
   } catch (error) {
